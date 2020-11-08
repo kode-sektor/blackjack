@@ -1,5 +1,11 @@
+
+:root {
+    --font-primary: 'Orbitron', sans-serif;
+    --font-secondary : 'Syne Mono', monospace;
+}
 body {
     background: url(images/app-blackjack-bg.jpg);
+    font-family: var(--font-primary);
 }
 .container-5 {
     border: thin solid black;
@@ -16,7 +22,7 @@ body {
     justify-content: space-around;
 }
 .flex-blackjack-row-1 {
-    background:orchid;
+    background: rgba(0,141,46,.5);
     color: snow;
 }
 .flex-blackjack-row-1 div {
@@ -31,9 +37,6 @@ body {
     padding: 10px;
     background: white;
 }
-.flex-blackjack-row-2 button {
-    border: thin solid black;
-}
 .flex-black-row-2 div {
     border: thin solid brown;
 }
@@ -41,4 +44,30 @@ table, th, td {
     padding: 5px;
     text-align: center;
     border: thin solid tan;
+}
+
+header {
+    text-align: center;
+}
+.gameTitle {
+    color: rgba(240,240,240,1);
+    margin: auto;
+    font-size: 2.4em;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+header h2 {
+    display: inline-block;
+    width: 50%;
+    padding: 0 50px;
+    color: yellow;
+    border: thin solid grey;
+}
+.result {
+    background: rgba(255,255,255,.2);
+}
+.result .score {
+    color: white;
+    font-size: 1.3em;
+    font-weight: bolder;
 }

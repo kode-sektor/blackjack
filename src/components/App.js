@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { Button, ButtonGroup } from 'reactstrap';
+
 
 export default class App extends Component {
 
@@ -8,16 +10,14 @@ export default class App extends Component {
 
             <>
 
-            <div className="container-1"></div>
-            <div className="container-2"></div>
-            <div className="container-3"></div>
-            <div className="container-4"></div>
-            
-            <div className="container-5">
-                <h2>BlackJack</h2>
-                <h3>
-                    <span id="blackjack-result" style={{color: 'black'}}>Let's Play</span>
-                </h3>
+            <div className="container-fluid">
+                <header>
+                    <h1 className="gameTitle">BlackJack</h1>
+                    <h2>
+                        <span id="blackjack-result">Let's Play</span>
+                    </h2>
+                </header>
+                
                 <div className="flex-blackjack-row-1">
                     <div id="your-box">
                         <h2>You: <span id="your-blackjack-result">0</span></h2>
@@ -27,13 +27,13 @@ export default class App extends Component {
                     </div>
                 </div>
                 <div className="flex-blackjack-row-2">
-                    <div>
-                        <button className="btn-lg btn-primary mr-2" id="blackjack-hit-button">Hit</button>
-                        <button className="btn-lg btn-danger mr-2" id="blackjack-deal-button">Deal</button>
-                        <button className="btn-lg btn-warning" id="blackjack-stand-button">Stand</button>
-                    </div>
+                    <ButtonGroup>
+                        <Button className="btn-lg btn-primary mr-2" id="blackjack-hit-button">Hit</Button>
+                        <Button className="btn-lg btn-danger mr-2" id="blackjack-deal-button">Deal</Button>
+                        <Button className="btn-lg btn-warning" id="blackjack-stand-button">Stand</Button>
+                    </ButtonGroup>
                 </div>
-                <div className="flex-blackjack-row-3">
+                <div className="flex-blackjack-row-3 result">
                     <table>
                         <tbody>
                             <tr>
@@ -41,7 +41,7 @@ export default class App extends Component {
                                 <th>Draws</th>
                                 <th>Losses</th>
                             </tr>
-                            <tr>
+                            <tr className="score">
                                 <td><span id="wins">0</span></td>
                                 <td><span id="draws">0</span></td>
                                 <td><span id="losses">0</span></td>
