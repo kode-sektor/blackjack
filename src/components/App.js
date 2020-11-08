@@ -4,6 +4,47 @@ import { Button, ButtonGroup } from 'reactstrap';
 
 export default class App extends Component {
 
+    state = {
+
+        blackjackGame : {
+			'you' : {
+				'scoreSpan' : '#your-blackjack-result', 
+				'div' : '#your-box',
+				'score' : 0
+			},
+			'dealer' : {
+				'scoreSpan' : '#dealer-blackjack-result', 
+				'div' : '#dealer-box',
+				'score' : 0
+			},
+			'cards' : ['2','3','4','5','6','7','8','9','10','K','J','Q','A'],
+			'cardsMap' : {'2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9, '10':10, 'K':10, 'J':10, 'Q':10, 'A':[1,11] },
+			'wins' : 0,
+			'losses' : 0,
+			'draws' : 0,
+
+			'isStand' : false,
+			'turnsOver' : false
+		}
+    }
+
+    // On click of 'Hit', generate random card, update and show score
+    blackjackHit = () => {
+
+        if (this.state.blackjackGame['isStand'] === false) {	 // 'Hit' should only work if stand button has not yet been clicked (COM has played)
+
+            let card = this.randomCard();	// get random card
+            alert(card)
+        }
+
+    }
+
+    randomCard = () => {
+        let randomIndx = Math.floor(Math.random() * 13);	// 13 possibilities
+        return this.state.blackjackGame.cards[randomIndx];
+    }
+
+
     render() {
 
         return (
@@ -28,9 +69,9 @@ export default class App extends Component {
                 </div>
                 <div className="flex-blackjack-row-2">
                     <ButtonGroup>
-                        <Button className="btn-lg btn-primary mr-2" id="blackjack-hit-button">Hit</Button>
-                        <Button className="btn-lg btn-danger mr-2" id="blackjack-deal-button">Deal</Button>
-                        <Button className="btn-lg btn-warning" id="blackjack-stand-button">Stand</Button>
+                        <Button onClick={(e)=> {this.blackjackHit()}} className="btn-lg btn-primary mr-2" id="blackjack-hit-button">Hit</Button>
+                        <Button onClick={(e)=> {this.blackjackHit()}} className="btn-lg btn-danger mr-2" id="blackjack-deal-button">Deal</Button>
+                        <Button onClick={(e)=> {this.blackjackHit()}} className="btn-lg btn-warning" id="blackjack-stand-button">Stand</Button>
                     </ButtonGroup>
                 </div>
                 <div className="flex-blackjack-row-3 result">
