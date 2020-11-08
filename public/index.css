@@ -1,0 +1,44 @@
+body {
+    background: url(images/app-blackjack-bg.jpg);
+}
+.container-5 {
+    border: thin solid black;
+    width: 75%;
+    margin: 0 auto;
+    text-align: center;
+}
+[class^=flex-blackjack-row] {
+    display: flex;
+    border: thin solid black;
+    padding: 10px;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-around;
+}
+.flex-blackjack-row-1 {
+    background:orchid;
+    color: snow;
+}
+.flex-blackjack-row-1 div {
+    border: thin solid black;
+    padding: 10px;
+    height: 350px;
+    flex: 1;
+    text-align: center;
+}
+.flex-blackjack-row-1 img {
+    width: 25%;
+    padding: 10px;
+    background: white;
+}
+.flex-blackjack-row-2 button {
+    border: thin solid black;
+}
+.flex-black-row-2 div {
+    border: thin solid brown;
+}
+table, th, td {
+    padding: 5px;
+    text-align: center;
+    border: thin solid tan;
+}
