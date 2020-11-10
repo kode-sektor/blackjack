@@ -21,15 +21,14 @@ export default class App extends Component {
 			draws : 0,
 
 			isStand : false,
-			turnsOver : false
+            turnsOver : false,
+            roundMessage : 'Let\'s Play'
 		}
     }
 
     // On click of 'Hit', generate random card, update and show score
     blackjackHit = () => {
-        console.log(this.state.blackjackGame['isStand'])
         if (this.state.blackjackGame['isStand'] === false) {	 // 'Hit' should only work if stand button has not yet been clicked (COM has played)
-            console.log(this)
             let card = this.randomCard()	// get random card
 
             if (this.state.blackjackGame['you']['score'] <= 21) {
@@ -41,7 +40,7 @@ export default class App extends Component {
                         ...this.state.blackjackGame,
                         you : {
                             score,
-                            cardImage : [...this.state.blackjackGame.you.cardImage, <img src={`images/cards/${card}.png`} alt={`${card}`}/>]
+                            cardImage : [...this.state.blackjackGame.you.cardImage, cardImg]
                         }
                     }
                 })
@@ -76,22 +75,36 @@ export default class App extends Component {
                         ...this.state.blackjackGame,
                         dealer : {
                             score,
-                            cardImage : [...this.state.blackjackGame.dealer.cardImage, <img src={`images/cards/${card}.png`} alt={`${card}`}/>]
+                            cardImage : [...this.state.blackjackGame.dealer.cardImage, cardImg]
                         }
                     }
                 })
             }
 
             if (this.state.blackjackGame['dealer']['score'] > (15 + rand)) {
-                // showResult (computeWinner());   // First decide winner then show result of winner's details in HTML
+                let winner = this.computeWinner()   // First decide winner then show result of winner's details in HTML
+                console.log(winner)
+                alert(winner[1][0])
+                alert(winner[1][1])
+                alert(winner[1][2])
+                
+                this.setState({
+                    blackjackGame : {
+                        ...this.state.blackjackGame,
+                        wins : winner[1][0],
+                        losses : winner[1][2],
+                        draws : winner[1][1],
+
+                        turnsOver : true
+                    }
+                })
 
                 // Prep game for reset after bot's game is committed. Game is over after
                 // winner has been computed		
                 this.state.blackjackGame['turnsOver'] = true;	
             } else {
-                setTimeout(deal, 400);	// 6a. Cycle every 4ms (recursive)
+                setTimeout(deal, 400);	// Cycle every 4ms (recursive)
             }
-
         }
 
         deal ();
@@ -108,7 +121,7 @@ export default class App extends Component {
         return <img src={`images/cards/${card}.png`} alt={`${card}`}/>
     }
 
-    // 1b. Any random card has a mapped value. Update by adding
+    // Any random card has a mapped value. Update by adding
     updateScore = (activePlayer, card) => {
 
         // For ACE, it's either 1 or 11. Choose 11 if game wouldn't hit threshold
@@ -125,6 +138,56 @@ export default class App extends Component {
         }
     }
 
+    // Decide winner and return YOU or DEALER object
+
+    computeWinner = () => {
+
+        let winner;
+        const BLACKJACK = this.state.blackjackGame
+        const YOU = BLACKJACK['you']
+        const DEALER = BLACKJACK['dealer']
+
+        let win = 0
+        let draw = 0
+        let loss = 0
+
+        if (YOU['score'] <= 21) {
+            // If your score is less than 21 but greater than bot's score, you win
+            // If your score is less than 21 and bot busts(score greater than 21), you win
+
+            if (YOU['score'] > DEALER['score'] || DEALER['score'] > 21) {
+                winner = YOU;
+                win = ++BLACKJACK['wins'];	// Update standings
+            }
+            
+            // If your score is less than 21 and less than bot's score, you lose
+            else if (YOU['score'] < DEALER['score']) {
+                winner = DEALER;
+                loss = ++BLACKJACK['losses'];	
+            } 
+
+            // If your score is less than 21 and same with bot's, you draw
+            else if (YOU['score'] === DEALER['score']) {
+                winner = 'DRAW';
+                draw = ++BLACKJACK['draws'];	
+            }
+        } 
+
+        // Else if your score is greater than 21 bot's score is less, you lose
+
+        else if (YOU['score'] > 21 && DEALER['score'] <= 21) {
+            winner = DEALER;
+            loss = ++BLACKJACK['losses'];	
+        } 
+
+        // Else if you both bust, you draw
+        else if (YOU['score'] > 21 && DEALER['score'] > 21) {
+            winner = 'DRAW';
+            draw = ++BLACKJACK['draws'];	
+        }
+        return [winner, [win, draw, loss]]
+    }
+
 
     render() {
 
@@ -136,7 +199,7 @@ export default class App extends Component {
                 <header>
                     <h1 className="gameTitle">BlackJack</h1>
                     <h2>
-                        <span id="blackjack-result">Let's Play</span>
+                        <span id="blackjack-result">{this.state.blackjackGame.roundMessage}</span>
                     </h2>
                 </header>
                 
@@ -188,9 +251,9 @@ export default class App extends Component {
                                 <th>Losses</th>
                             </tr>
                             <tr className="score">
-                                <td><span id="wins">0</span></td>
-                                <td><span id="draws">0</span></td>
-                                <td><span id="losses">0</span></td>
+                                <td><span id="wins">{this.state.blackjackGame.wins}</span></td>
+                                <td><span id="draws">{this.state.blackjackGame.draws}</span></td>
+                                <td><span id="losses">{this.state.blackjackGame.losses}</span></td>
                             </tr>
                         </tbody>
                     </table>
