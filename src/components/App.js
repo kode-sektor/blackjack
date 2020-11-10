@@ -61,33 +61,42 @@ export default class App extends Component {
         rand = (rand < 75) ? (Math.round(Math.random() * 2)) : (Math.round(Math.random() * 4));
 
         // Make 'deal' button hit automatically, after being hit once, and then compute
-        // winner as it normally would after commiting (3-d.)
+        // winner as it normally would after commiting
         const deal = () => {
 
             let card = this.randomCard();	// get random card
+            let DEALER = this.state.blackjackGame['dealer']
 
-            if (this.state.blackjackGame['dealer']['score'] <= 21) {
-                let cardImg = this.showCard(this.state.blackjackGame['dealer'], card) // .then(hitSound.play());	// show random card in HTML
-                let score = this.updateScore(this.state.blackjackGame['dealer'], card)  // Update the score
+            let cardImg = this.showCard(DEALER, card) // .then(hitSound.play());	// show random card in HTML
+            let score = Number(this.updateScore(DEALER, card))  // Updated score
 
-                this.setState({
-                    blackjackGame : {
-                        ...this.state.blackjackGame,
-                        dealer : {
+            let dealer = {
                             score,
                             cardImage : [...this.state.blackjackGame.dealer.cardImage, cardImg]
                         }
-                    }
-                })
-            }
 
-            if (this.state.blackjackGame['dealer']['score'] > (15 + rand)) {
+            this.setState({
+                blackjackGame : {
+                    ...this.state.blackjackGame,
+                    dealer
+                }
+            })
+
+            if (score > (15 + rand)) {
+
                 let winner = this.computeWinner()   // First decide winner then show result of winner's details in HTML
-                console.log(winner)
-                alert(winner[1][0])
-                alert(winner[1][1])
-                alert(winner[1][2])
-                
+                let YOU = this.state.blackjackGame.you
+                let roundMessage = ''
+
+
+                if (winner[0] === YOU) {
+                    roundMessage = 'You won!'
+                } else if (winner[0] === dealer) {
+                    roundMessage = 'You lost!'
+                } else {
+                    roundMessage = 'DRAW!'
+                }
+                 
                 this.setState({
                     blackjackGame : {
                         ...this.state.blackjackGame,
@@ -95,13 +104,10 @@ export default class App extends Component {
                         losses : winner[1][2],
                         draws : winner[1][1],
 
-                        turnsOver : true
+                        turnsOver : true,
+                        roundMessage
                     }
                 })
-
-                // Prep game for reset after bot's game is committed. Game is over after
-                // winner has been computed		
-                this.state.blackjackGame['turnsOver'] = true;	
             } else {
                 setTimeout(deal, 400);	// Cycle every 4ms (recursive)
             }
@@ -122,19 +128,22 @@ export default class App extends Component {
     }
 
     // Any random card has a mapped value. Update by adding
+    // Adds current score + old score
     updateScore = (activePlayer, card) => {
+
+        let cardVal = this.state.blackjackGame['cardsMap'][card]
 
         // For ACE, it's either 1 or 11. Choose 11 if game wouldn't hit threshold
         // otherwise choose 1
         if (card === 'A') {	// Run for only ACE and try not to add lesser of ACE values if it exceeds 21
-            if (activePlayer['score'] + this.state.blackjackGame['cardsMap'][card][1] <= 21) { 
-                return activePlayer['score'] + this.state.blackjackGame['cardsMap'][card][1]    // existing score + value of card 
+            if (activePlayer['score'] + cardVal[1] <= 21) { 
+                return activePlayer['score'] + cardVal[1]    // existing score + value of card 
             } else {
-                return activePlayer['score'] + this.state.blackjackGame['cardsMap'][card][0]
+                return activePlayer['score'] + cardVal[0]
             }
         } else {
             // Without ACE (will run most of the time) existing score + value of card 
-            return activePlayer['score'] + this.state.blackjackGame['cardsMap'][card]
+            return activePlayer['score'] + cardVal
         }
     }
 
@@ -151,6 +160,8 @@ export default class App extends Component {
         let draw = 0
         let loss = 0
 
+        console.log(this.state)
+
         if (YOU['score'] <= 21) {
             // If your score is less than 21 but greater than bot's score, you win
             // If your score is less than 21 and bot busts(score greater than 21), you win
@@ -158,32 +169,36 @@ export default class App extends Component {
             if (YOU['score'] > DEALER['score'] || DEALER['score'] > 21) {
                 winner = YOU;
                 win = ++BLACKJACK['wins'];	// Update standings
+                alert('category 1')
             }
             
             // If your score is less than 21 and less than bot's score, you lose
             else if (YOU['score'] < DEALER['score']) {
                 winner = DEALER;
                 loss = ++BLACKJACK['losses'];	
+                alert('category 2')
             } 
 
             // If your score is less than 21 and same with bot's, you draw
             else if (YOU['score'] === DEALER['score']) {
                 winner = 'DRAW';
-                draw = ++BLACKJACK['draws'];	
+                draw = ++BLACKJACK['draws'];
+                alert('category 3')	
             }
         } 
 
         // Else if your score is greater than 21 bot's score is less, you lose
-
         else if (YOU['score'] > 21 && DEALER['score'] <= 21) {
             winner = DEALER;
             loss = ++BLACKJACK['losses'];	
+            alert('category 4')
         } 
 
         // Else if you both bust, you draw
         else if (YOU['score'] > 21 && DEALER['score'] > 21) {
             winner = 'DRAW';
             draw = ++BLACKJACK['draws'];	
+            alert('category 5')	
         }
         return [winner, [win, draw, loss]]
     }
