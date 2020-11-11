@@ -1,5 +1,9 @@
 # blackjack
 
+Deployed site : https://blakjack.netlify.app/
+
+<img src="/public/images/project-poster.png">
+
 ## This is a miniature React app that simulates the BlackJack Game
 
 This BlackJack app is a game between you as a user versus the computer (COM). As the user, you are to 'hit' a number of cards below 22. The cards dealt are random. And to win a round, the sumtotal of these card values should be more than what COM chooses. COM, of course, is programmed to deal cards close to 21 score. 

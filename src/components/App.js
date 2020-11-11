@@ -307,7 +307,7 @@ export default class App extends Component {
                     <Col>
                         <Card body>
                             <CardTitle tag="h5">Built by CodeSector</CardTitle>
-                            <CardText><small>Credits to <a href="https://www.youtube.com/channel/UCqrILQNl5Ed9Dz6CGMyvMTQ">CleverProgrammer</a></small></CardText>
+                            <CardText><small>Credits : <a href="https://www.youtube.com/channel/UCqrILQNl5Ed9Dz6CGMyvMTQ">CleverProgrammer</a></small></CardText>
                         </Card>
                     </Col>
                 </Row>
