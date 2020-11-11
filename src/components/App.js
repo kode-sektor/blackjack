@@ -34,6 +34,7 @@ export default class App extends Component {
             if (this.state.blackjackGame['you']['score'] <= 21) {
                 let cardImg = this.showCard(this.state.blackjackGame['you'], card) // .then(hitSound.play());	// show random card in HTML
                 let score = this.updateScore(this.state.blackjackGame['you'], card)  // Update the score
+                new Audio ('sounds/swish.m4a').play()
 
                 this.setState({
                     blackjackGame : {
@@ -75,6 +76,8 @@ export default class App extends Component {
                             score,
                             cardImage : [...this.state.blackjackGame.dealer.cardImage, cardImg]
                         }
+            
+            new Audio ('sounds/swish.m4a').play()
 
             this.setState({
                 blackjackGame : {
@@ -91,8 +94,10 @@ export default class App extends Component {
 
                 if (winner[0] === YOU) {
                     roundMessage = 'You won!'
+                    new Audio ('sounds/cash.mp3').play()
                 } else if (winner[0] === dealer) {
                     roundMessage = 'You lost!'
+                    new Audio ('sounds/aww.mp3').play()
                 } else {
                     roundMessage = 'DRAW!'
                 }
@@ -125,7 +130,7 @@ export default class App extends Component {
     }
 
     // Create random image element and insert in HTML
-    showCard = (activePlayer, card) => {
+    showCard (activePlayer, card) {
         // Set threshold to prevent game from continuing past score
         return <img src={`images/cards/${card}.png`} alt={`${card}`}/>
     }
