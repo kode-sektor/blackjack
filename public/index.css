@@ -74,3 +74,6 @@ header h2 {
     font-weight: bolder;
     font-family: var(--font-secondary);
 }
+.btn[disabled] {
+    cursor: not-allowed;
+}

@@ -28,7 +28,7 @@ export default class App extends Component {
 
     // On click of 'Hit', generate random card, update and show score
     blackjackHit = () => {
-        if (this.state.blackjackGame['isStand'] === false) {	 // 'Hit' should only work if stand button has not yet been clicked (COM has played)
+        if (this.state.blackjackGame['turnsOver'] === false) {	 // 'Hit' should only work if stand button has not yet been clicked (COM has played)
             let card = this.randomCard()	// get random card
 
             if (this.state.blackjackGame['you']['score'] <= 21) {
@@ -41,7 +41,8 @@ export default class App extends Component {
                         you : {
                             score,
                             cardImage : [...this.state.blackjackGame.you.cardImage, cardImg]
-                        }
+                        },
+                        isStand : true
                     }
                 })
             }
@@ -84,10 +85,9 @@ export default class App extends Component {
 
             if (score > (15 + rand)) {
 
-                let winner = this.computeWinner()   // First decide winner then show result of winner's details in HTML
+                let winner = this.computeWinner(score)   // First decide winner then show result of winner's details in HTML
                 let YOU = this.state.blackjackGame.you
                 let roundMessage = ''
-
 
                 if (winner[0] === YOU) {
                     roundMessage = 'You won!'
@@ -96,14 +96,17 @@ export default class App extends Component {
                 } else {
                     roundMessage = 'DRAW!'
                 }
+
+                console.log(this.state.blackjackGame)
                  
                 this.setState({
                     blackjackGame : {
                         ...this.state.blackjackGame,
-                        wins : winner[1][0],
-                        losses : winner[1][2],
-                        draws : winner[1][1],
+                        wins : this.state.blackjackGame.wins + winner[1][0],
+                        losses : this.state.blackjackGame.losses + winner[1][2],
+                        draws : this.state.blackjackGame.draws + winner[1][1],
 
+                        isStand : false,
                         turnsOver : true,
                         roundMessage
                     }
@@ -149,7 +152,7 @@ export default class App extends Component {
 
     // Decide winner and return YOU or DEALER object
 
-    computeWinner = () => {
+    computeWinner = (score) => {
 
         let winner;
         const BLACKJACK = this.state.blackjackGame
@@ -160,47 +163,69 @@ export default class App extends Component {
         let draw = 0
         let loss = 0
 
-        console.log(this.state)
+        // console.log(this.state)
 
         if (YOU['score'] <= 21) {
             // If your score is less than 21 but greater than bot's score, you win
             // If your score is less than 21 and bot busts(score greater than 21), you win
 
-            if (YOU['score'] > DEALER['score'] || DEALER['score'] > 21) {
+            if (YOU['score'] > score || score > 21) {
                 winner = YOU;
-                win = ++BLACKJACK['wins'];	// Update standings
-                alert('category 1')
+                win = 1;	// Update standings
             }
             
             // If your score is less than 21 and less than bot's score, you lose
-            else if (YOU['score'] < DEALER['score']) {
+            else if (YOU['score'] < score) {
                 winner = DEALER;
-                loss = ++BLACKJACK['losses'];	
-                alert('category 2')
+                loss = 1;	
             } 
 
             // If your score is less than 21 and same with bot's, you draw
-            else if (YOU['score'] === DEALER['score']) {
+            else if (YOU['score'] === score) {
                 winner = 'DRAW';
-                draw = ++BLACKJACK['draws'];
-                alert('category 3')	
+                draw = 1;
             }
         } 
 
         // Else if your score is greater than 21 bot's score is less, you lose
-        else if (YOU['score'] > 21 && DEALER['score'] <= 21) {
+        else if (YOU['score'] > 21 && score <= 21) {
             winner = DEALER;
-            loss = ++BLACKJACK['losses'];	
-            alert('category 4')
+            loss = 1;	
         } 
 
         // Else if you both bust, you draw
-        else if (YOU['score'] > 21 && DEALER['score'] > 21) {
+        else if (YOU['score'] > 21 && score > 21) {
             winner = 'DRAW';
-            draw = ++BLACKJACK['draws'];	
-            alert('category 5')	
+            draw = 1;	
         }
         return [winner, [win, draw, loss]]
+    }
+
+    // On click of 'Deal', remove cards
+    blackjackDeal = () => {
+
+        // Only run the 'Deal' button after bot's game is committed. In other words, the 
+        // winner has been computed
+        if (this.state.blackjackGame['turnsOver'] === true) {
+
+            this.setState({
+                blackjackGame : {
+                    ...this.state.blackjackGame, 
+                    you : {
+                        score : 0, 
+                        cardImage : []
+                    },
+                    dealer : {
+                        score : 0, 
+                        cardImage : []
+                    },
+        
+                    isStand : false,
+                    turnsOver : false,
+                    roundMessage : 'Let\'s Play'
+                }
+            })
+        }
     }
 
 
@@ -236,7 +261,7 @@ export default class App extends Component {
                     </div>
                     <div id="dealer-box">
                         <h2>
-                            Dealer : &nbsp; 
+                            BlackJackBot : &nbsp; 
                             <span id="dealer-blackjack-result">
                                 {this.state.blackjackGame['dealer']['score'] < 21 ? this.state.blackjackGame['dealer']['score'] : 'BUST'}
                             </span>
@@ -252,9 +277,9 @@ export default class App extends Component {
                 </section>
                 <section className="flex-blackjack-row-2">
                     <ButtonGroup>
-                        <Button onClick={(e)=> {this.blackjackHit()}} className="btn-lg btn-primary mr-2" id="blackjack-hit-button">Hit</Button>
-                        <Button onClick={(e)=> {this.blackjackHit()}} className="btn-lg btn-danger mr-2" id="blackjack-deal-button">Deal</Button>
-                        <Button onClick={(e)=> {this.standLogic()}} className="btn-lg btn-warning" id="blackjack-stand-button">Stand</Button>
+                        <Button onClick={(e)=> {this.blackjackHit()}} className="btn-lg btn-primary hit mr-2" disabled={this.state.blackjackGame.turnsOver === false ? false : true } id="blackjack-hit-button">Hit</Button>
+                        <Button onClick={(e)=> {this.blackjackDeal()}} className="btn-lg btn-danger deal mr-2" disabled={this.state.blackjackGame.turnsOver === false ? true : false} id="blackjack-deal-button">Deal</Button>
+                        <Button onClick={(e)=> {this.standLogic()}} className="btn-lg btn-warning stand" disabled={this.state.blackjackGame.isStand === false ? true : false} id="blackjack-stand-button">Stand</Button>
                     </ButtonGroup>
                 </section>
                 <section className="flex-blackjack-row-3 result">
