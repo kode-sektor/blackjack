@@ -7,6 +7,9 @@ body {
     background: url(images/app-blackjack-bg.jpg);
     font-family: var(--font-primary);
 }
+a {
+    color: inherit;
+}
 .container-5 {
     border: thin solid black;
     width: 75%;
@@ -76,4 +79,30 @@ header h2 {
 }
 .btn[disabled] {
     cursor: not-allowed;
+}
+.author {
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 2;
+    background-color: rgb(0 123 255 / 76%);
+    width: 30%;
+    min-width: 300px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    animation : fade 10s 1s forwards 
+}
+@keyframes fade {
+    from {
+        opacity : 1;
+    }
+    to {
+        opacity : 0;
+        right : -450px
+    }
+}
+
+.author .card-body {
+    color : white;
+    border: none;
+    background-color: transparent;
 }
