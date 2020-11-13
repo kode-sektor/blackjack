@@ -22,7 +22,13 @@ export default class App extends Component {
 
 			isStand : false,
             turnsOver : false,
-            roundMessage : 'Let\'s Play'
+            roundMessage : 'Let\'s Play',
+
+            audio : {
+                play : new Audio ('sounds/swish.m4a'),
+                win : new Audio ('sounds/cash.mp3'),
+                loss : new Audio ('sounds/aww.mp3')
+            }
 		}
     }
 
@@ -34,7 +40,7 @@ export default class App extends Component {
             if (this.state.blackjackGame['you']['score'] <= 21) {
                 let cardImg = this.showCard(this.state.blackjackGame['you'], card) // .then(hitSound.play());	// show random card in HTML
                 let score = this.updateScore(this.state.blackjackGame['you'], card)  // Update the score
-                new Audio ('sounds/swish.m4a').play()
+                this.state.blackjackGame.audio.play.play()
 
                 this.setState({
                     blackjackGame : {
@@ -71,14 +77,13 @@ export default class App extends Component {
 
             let cardImg = this.showCard(DEALER, card) // .then(hitSound.play());	// show random card in HTML
             let score = Number(this.updateScore(DEALER, card))  // Updated score
+            this.state.blackjackGame.audio.play.play()
 
             let dealer = {
                             score,
                             cardImage : [...this.state.blackjackGame.dealer.cardImage, cardImg]
                         }
             
-            new Audio ('sounds/swish.m4a').play()
-
             this.setState({
                 blackjackGame : {
                     ...this.state.blackjackGame,
@@ -94,15 +99,15 @@ export default class App extends Component {
 
                 if (winner[0] === YOU) {
                     roundMessage = 'You won!'
-                    new Audio ('sounds/cash.mp3').play()
+                    this.state.blackjackGame.audio.win.play()
                 } else if (winner[0] === dealer) {
                     roundMessage = 'You lost!'
-                    new Audio ('sounds/aww.mp3').play()
+                    this.state.blackjackGame.audio.loss.play()
                 } else {
                     roundMessage = 'DRAW!'
                 }
 
-                console.log(this.state.blackjackGame)
+                // console.log(this.state.blackjackGame)
                  
                 this.setState({
                     blackjackGame : {
@@ -236,7 +241,7 @@ export default class App extends Component {
 
     render() {
 
-        console.log(this.state.blackjackGame)
+        // console.log(this.state.blackjackGame)
 
         return (
 
@@ -253,7 +258,7 @@ export default class App extends Component {
                         <h2>
                             You : &nbsp; 
                             <span id="your-blackjack-result">
-                                {this.state.blackjackGame['you']['score'] < 21 ? this.state.blackjackGame['you']['score'] : 'BUST'}
+                                {this.state.blackjackGame['you']['score'] <= 21 ? this.state.blackjackGame['you']['score'] : 'BUST'}
                             </span>
                         </h2>
                         <section>
@@ -268,7 +273,7 @@ export default class App extends Component {
                         <h2>
                             BlackJackBot : &nbsp; 
                             <span id="dealer-blackjack-result">
-                                {this.state.blackjackGame['dealer']['score'] < 21 ? this.state.blackjackGame['dealer']['score'] : 'BUST'}
+                                {this.state.blackjackGame['dealer']['score'] <= 21 ? this.state.blackjackGame['dealer']['score'] : 'BUST'}
                             </span>
                         </h2>
                         <section>
